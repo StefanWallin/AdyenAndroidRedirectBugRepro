@@ -5,6 +5,10 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
+import com.adyenreactnativesdk.AdyenCheckout;
+import android.os.Bundle;
+import android.content.Intent;
+
 public class MainActivity extends ReactActivity {
 
   /**
@@ -14,6 +18,24 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "AdyenAndroidRedirectBugRepro";
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    AdyenCheckout.setLauncherActivity(this);
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    AdyenCheckout.handleIntent(intent);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    AdyenCheckout.handleActivityResult(requestCode, resultCode, data);
   }
 
   /**
