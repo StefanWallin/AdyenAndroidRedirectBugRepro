@@ -41,5 +41,6 @@
               android:scheme="${redirectScheme}" />
         </intent-filter>
       </activity>
+      <service android:name="com.adyenreactnativesdk.component.dropin.AdyenCheckoutService" android:exported="false" />
     </application>
 </manifest>

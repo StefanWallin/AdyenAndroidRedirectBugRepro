@@ -8,14 +8,14 @@ import React, {
   useEffect,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ENVIRONMENT } from '../Configuration';
+import {ENVIRONMENT} from '../Configuration';
 
 export const AppContext = createContext({
   configuration: {},
-  save: async (configuration) => { },
+  save: async configuration => {},
 });
 
-export const checkoutConfiguration = (config) => {
+export const checkoutConfiguration = config => {
   return {
     clientKey: ENVIRONMENT.clientKey,
     environment: ENVIRONMENT.environment,
@@ -25,31 +25,14 @@ export const checkoutConfiguration = (config) => {
       currency: config.currency,
     },
     countryCode: config.countryCode,
-    applepay: {
-      merchantID: ENVIRONMENT.applepayMerchantID,
-      merchantName: config.merchantName,
-      requiredBillingContactFields: ['phoneticName', 'postalAddress'],
-      requiredShippingContactFields: [
-        'name',
-        'phone',
-        'email',
-        'postalAddress',
-      ],
+    dropin: {
+      showPreselectedStoredPaymentMethod: false,
     },
-    googlepay: {
-      billingAddressRequired: true,
-      billingAddressParameters: {
-        format: 'FULL',
-        phoneNumberRequired: true,
-      },
-      shippingAddressRequired: true,
-      shippingAddressParameters: {
-        allowedCountryCodes: ['US', 'MX',],
-        phoneNumberRequired: true,
-      },
-      emailRequired: true,
-    }
-  }
+    card: {
+      showStorePaymentField: false,
+      holderNameRequired: false,
+    },
+  };
 };
 
 export const useAppContext = () => {
@@ -62,12 +45,12 @@ export const useAppContext = () => {
 
 const storeKey = '@config_storage';
 
-const AppContextProvider = (props) => {
+const AppContextProvider = props => {
   const [config, setConfig] = useState(props.configuration);
 
   useEffect(() => {
     AsyncStorage.getItem(storeKey)
-      .then((value) => {
+      .then(value => {
         if (value) {
           console.debug(`Stored config: ${value}`);
           const parsed = JSON.parse(value);
@@ -86,9 +69,9 @@ const AppContextProvider = (props) => {
   const appState = useMemo(
     () => ({
       configuration: config,
-      save: saveConfiguration
+      save: saveConfiguration,
     }),
-    [config]
+    [config],
   );
 
   return (

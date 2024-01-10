@@ -1,7 +1,7 @@
 // @ts-check
 
-import { LogBox } from 'react-native';
-import { ENVIRONMENT, CHANNEL } from '../Configuration';
+import {LogBox} from 'react-native';
+import {ENVIRONMENT, CHANNEL} from '../Configuration';
 
 LogBox.ignoreLogs(['Require cycle:']);
 
@@ -14,13 +14,19 @@ class ApiClient {
       ...parseAmount(configuration, data),
       ...serverConfiguration,
       ...paymentConfiguration,
-      returnUrl: returnUrl
+      authenticationData: {
+        attemptAuthentication: 'always',
+      },
+      storePaymentMethod: true,
+      shopperInteraction: 'Ecommerce',
+      recurringProcessingModel: 'CardOnFile',
+      returnUrl: returnUrl,
     };
-
+    console.log(JSON.stringify(body));
     return ApiClient.makeRequest(ENVIRONMENT.url + 'payments', body);
   }
 
-  static paymentDetails = (data) => {
+  static paymentDetails = data => {
     return ApiClient.makeRequest(ENVIRONMENT.url + 'payments/details', data);
   };
 
@@ -30,12 +36,12 @@ class ApiClient {
       ...parseAmount(configuration),
       ...serverConfiguration,
       ...paymentConfiguration,
-      returnUrl: returnUrl
+      returnUrl: returnUrl,
     };
     return ApiClient.makeRequest(ENVIRONMENT.url + 'sessions', body);
   };
 
-  static paymentMethods = (configuration) => {
+  static paymentMethods = configuration => {
     const body = {
       ...parseConfig(configuration),
       ...parseAmount(configuration),
@@ -59,9 +65,12 @@ class ApiClient {
     });
 
     const response = await fetch(request);
-    const pspReference = response.headers.get("pspreference");
+    const pspReference = response.headers.get('pspreference');
     console.debug(`PSP Reference - ${pspReference}`);
     const payload = await response.json();
+    console.debug(
+      `Response: ${response.status} ${JSON.stringify(payload, null, 2)}`,
+    );
     if (response.ok) return payload;
     console.warn(`Error - ${JSON.stringify(payload, null, ' ')}`);
     throw new Error(`Network Error ${response.status}:
@@ -77,7 +86,7 @@ const serverConfiguration = {
 };
 
 const paymentConfiguration = {
-  additionalData: { allow3DS2: true },
+  // additionalData: {allow3DS2: true},
   lineItems: [
     {
       quantity: '1',
@@ -102,7 +111,7 @@ const paymentConfiguration = {
       imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
     },
   ],
-  recurringProcessingModel: 'CardOnFile'
+  recurringProcessingModel: 'CardOnFile',
 };
 
 const parseAmount = (configuration, data) => ({

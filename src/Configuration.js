@@ -1,4 +1,4 @@
-import { Platform, NativeModules } from 'react-native';
+import {Platform, NativeModules} from 'react-native';
 export const DEVICE_LOCALE = (
   Platform.OS === 'ios'
     ? NativeModules.SettingsManager.settings.AppleLocale ||
@@ -12,9 +12,9 @@ export const CHANNEL = Platform.select({
 })();
 
 export const DEFAULT_CONFIGURATION = {
-  countryCode: 'NL',
-  currency: 'EUR',
-  amount: 1000, // The amount value in minor units.
+  countryCode: 'SE',
+  currency: 'SEK',
+  amount: 200000, // The amount value in minor units.
   merchantAccount: '{YOUR_MERCHANT_ACCOUNT}',
   merchantName: 'MyStore',
   shopperLocale: DEVICE_LOCALE,
