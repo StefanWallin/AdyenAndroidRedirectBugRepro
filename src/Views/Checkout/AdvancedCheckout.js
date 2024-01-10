@@ -13,6 +13,14 @@ const AdvancedCheckout = ({navigation}) => {
   console.debug('Rendering AdvancedCheckout');
   const {configuration} = useAppContext();
   const [paymentMethods, setPaymentMethods] = useState(undefined);
+  const [, forceRefresh] = useState([]);
+
+  useEffect(() => {
+    const handle = setInterval(() => {
+      forceRefresh([]);
+    }, 4000);
+    return () => clearInterval(handle);
+  }, []);
 
   useEffect(() => {
     refreshPaymentMethods(configuration).catch(e => {
@@ -47,6 +55,7 @@ const AdvancedCheckout = ({navigation}) => {
           data.returnUrl,
         );
         console.debug(`didSubmitResult: ${JSON.stringify(result, null, ' ')}`);
+        forceRefresh([]);
         if (result.action) {
           nativeComponent.handle(result.action);
         } else {
