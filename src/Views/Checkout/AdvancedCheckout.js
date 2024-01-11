@@ -52,7 +52,7 @@ const AdvancedCheckout = ({navigation}) => {
         const result = await ApiClient.payments(
           data,
           configuration,
-          data.returnUrl,
+          configuration.returnUrl,
         );
         console.debug(`didSubmitResult: ${JSON.stringify(result, null, ' ')}`);
         forceRefresh([]);
